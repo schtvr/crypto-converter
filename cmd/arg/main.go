@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 
+	clients "github.com/schtvr/crypto-converter/internal/clients/coinbase"
 	"github.com/schtvr/crypto-converter/internal/handlers"
 )
 
@@ -22,7 +23,9 @@ func main() {
 	crypto1 := os.Args[2]
 	crypto2 := os.Args[3]
 
-	result, err := handlers.ConvertHoldings(usdAmount, crypto1, crypto2)
+	cryptoClient := clients.NewCoinbaseClient()
+
+	result, err := handlers.ConvertHoldings(usdAmount, crypto1, crypto2, cryptoClient)
 	if err != nil {
 		log.Fatalf("Error converting holdings: %v", err)
 	}

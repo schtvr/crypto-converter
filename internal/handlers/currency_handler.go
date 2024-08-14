@@ -3,12 +3,14 @@ package handlers
 import (
 	"fmt"
 	"strconv"
-
-	"github.com/schtvr/crypto-converter/internal/services"
 )
 
-func ConvertHoldings(usdAmount float64, crypto1, crypto2 string) (string, error) {
-	rates, err := services.GetCryptoRates()
+type CryptoClient interface {
+	GetCryptoRates() (map[string]string, error)
+}
+
+func ConvertHoldings(usdAmount float64, crypto1, crypto2 string, client CryptoClient) (string, error) {
+	rates, err := client.GetCryptoRates()
 	if err != nil {
 		return "", err
 	}
@@ -23,6 +25,5 @@ func ConvertHoldings(usdAmount float64, crypto1, crypto2 string) (string, error)
 	amount1 := usdAmount * 0.70 * rate1
 	amount2 := usdAmount * 0.30 * rate2
 
-	// return fmt.Sprintf("amount1 %f, amount2 %f", amount1, amount2), nil
 	return fmt.Sprintf("$%.2f => %.4f %s $%.2f => %.4f %s", usdAmount*0.70, amount1, crypto1, usdAmount*0.30, amount2, crypto2), nil
 }
